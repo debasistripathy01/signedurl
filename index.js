@@ -1,12 +1,30 @@
+const express = require('express');
 const AWS = require('aws-sdk');
-AWS.config.update({
-    accessKeyId: process.env.AWS_ACCESS_KEY,
-    secretAccessKey: process.env.YOUR_AWS_SECRET_ACCESS_KEY,
-    region: process.env.YOUR_AWS_REGION,
+
+const app = express();
+
+
+const cloudFrontDomain = 'https://d112r41hzy8rnj.cloudfront.net'; 
+app.get('/', (req, res) => {
+  const s3 = new AWS.S3();
+  const params = {
+    Bucket: 'beneath0', 
+    Key: '20230421_085311_11zon.jpeg', 
+    Expires: 300, 
+  };
+
+  s3.getSignedUrl('getObject', params, (err, url) => {
+    if (err) {
+      console.log('Error URL:', err);
+      return res.sendStatus(500);
+    }
+
+    console.log('Signed URL:', url);
+    res.send(`<img src="${url}">`); 
+  });
 });
 
-const s3 = new AWS.S3();
-console.log("URL generated", s3);
+
 
 const params = {
     Bucket: 'beneath0',
@@ -33,4 +51,9 @@ const params = {
     } else {
       console.log('Objects in the bucket:', data.Contents);
     }
+  });
+
+
+  app.listen(process.env.PORT, () => {
+    console.log(`Server listening on port ${port}`);
   });
