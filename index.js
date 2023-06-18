@@ -25,7 +25,7 @@ app.get('/', (req, res) => {
 });
 
 
-
+// Extra Codes to check if params working or not
 const params = {
     Bucket: 'beneath0',
     Key: '20230421_085311_11zon.jpeg',
